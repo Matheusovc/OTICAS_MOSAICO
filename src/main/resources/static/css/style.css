@@ -1997,8 +1997,7 @@ a:hover .link-arrow::after {
 .js [data-reveal] {
   transition:
     opacity var(--dur-slow) var(--ease-out) var(--delay, 0ms),
-    transform var(--dur-slow) var(--ease-out) var(--delay, 0ms),
-    clip-path var(--dur-slow) var(--ease-inout) var(--delay, 0ms);
+    transform var(--dur-slow) var(--ease-out) var(--delay, 0ms);
 }
 
 .js [data-reveal="fade"] {
@@ -2015,8 +2014,18 @@ a:hover .link-arrow::after {
   transform: scale(0.96);
 }
 
-.js [data-reveal="image"] {
-  clip-path: inset(100% 0 0 0);
+/* Revelação de imagem: uma "cortina" na cor da seção recolhe para cima.
+   A imagem em si continua visível para o navegador, o que mantém o
+   Intersection Observer e o loading="lazy" funcionando. */
+.js [data-reveal="image"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--reveal-cover, var(--color-white));
+  transform-origin: top;
+  transition: transform var(--dur-slow) var(--ease-inout) var(--delay, 0ms);
+  pointer-events: none;
 }
 
 .js [data-reveal="image"] img {
@@ -2027,12 +2036,20 @@ a:hover .link-arrow::after {
 .js [data-reveal].is-visible {
   opacity: 1;
   transform: none;
-  clip-path: inset(0 0 0 0);
+}
+
+.js [data-reveal="image"].is-visible::after {
+  transform: scaleY(0);
 }
 
 .js [data-reveal="image"].is-visible img {
   transform: scale(1);
 }
+
+/* Cor da cortina em cada fundo de seção */
+.exam       { --reveal-cover: var(--color-black); }
+.experience,
+.location   { --reveal-cover: var(--color-off-white); }
 
 /* Depois de revelada, a imagem volta a responder ao hover com a duração normal */
 .js .collection__item:hover [data-reveal="image"].is-visible img {
@@ -2092,6 +2109,9 @@ a:hover .link-arrow::after {
   .hero__title .line > span {
     opacity: 1;
     transform: none;
-    clip-path: none;
+  }
+
+  .js [data-reveal="image"]::after {
+    display: none;
   }
 }

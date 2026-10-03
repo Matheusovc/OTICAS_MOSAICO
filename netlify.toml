@@ -1,0 +1,4 @@
+# Publica apenas o front-end (a pasta servida pelo Spring Boot).
+[build]
+  publish = "src/main/resources/static"
+  command = ""
